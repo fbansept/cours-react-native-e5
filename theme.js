@@ -9,3 +9,20 @@ export const colors = {
   lightGrey: "#bbb",
   lighterGrey: "#eee",
 };
+
+const themeColors = {
+  dark: {
+    background: colors.darkGrey,
+  },
+  light: {
+    background: colors.white,
+  },
+};
+
+export default () => {
+
+    const scheme = useColorScheme();
+
+    return {...colors , ...themeColors[scheme]};
+
+}

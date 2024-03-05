@@ -1,3 +1,5 @@
+import { useColorScheme } from "react-native";
+
 export const colors = {
   primary: "#467386",
   accent: "#D5A26A",

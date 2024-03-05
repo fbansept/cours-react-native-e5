@@ -15,6 +15,7 @@ export const colors = {
 const themeColors = {
   dark: {
     background: colors.darkGrey,
+    primary: 'blue'
   },
   light: {
     background: colors.white,

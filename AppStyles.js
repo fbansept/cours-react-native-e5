@@ -10,14 +10,16 @@ export default AppStyles = () => {
     container: {
       flex: 1,
       backgroundColor: colorsTheme.background,
-      alignItems: "center",
-      justifyContent: "start",
     },
     safeArea: {
       paddingTop: margins.top,
       paddingBottom: margins.bottom,
       paddingLeft: margins.left,
       paddingRight: margins.right,
+    },
+    centered: {
+      alignItems: "center",
+      justifyContent: "center",
     },
   });
 };

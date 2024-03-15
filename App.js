@@ -13,6 +13,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState } from "react";
 import Connexion from "./screens/Connexion/Connexion";
 import * as SecureStore from "expo-secure-store";
+import Inscription from "./screens/Inscription/Inscription";
 
 export default () => {
   const [connecte, setConnecte] = useState(SecureStore.getItem("jwt") != null);
@@ -30,6 +31,10 @@ export default () => {
       });
   };
 
+  const onInscription = (data) => {
+    console.log(data);
+  };
+
   const onDeconnexion = () => {
     SecureStore.deleteItemAsync("jwt");
     setConnecte(false);
@@ -43,11 +48,19 @@ export default () => {
       <Connexion onConnexion={onConnexion}></Connexion>
     );
 
+    const InscriptionProps = () => (
+      <Inscription onInscription={onInscription}/>
+    );
+
     return (
       <NavigationConnexion.Navigator>
         <NavigationConnexion.Screen
           component={ConnexionProps}
           name="connexion"
+        />
+        <NavigationConnexion.Screen
+          component={InscriptionProps}
+          name="inscription"
         />
       </NavigationConnexion.Navigator>
     );

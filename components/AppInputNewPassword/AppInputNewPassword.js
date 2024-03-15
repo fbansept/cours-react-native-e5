@@ -1,8 +1,8 @@
 import { Controller } from "react-hook-form";
-import { Input } from "@rneui/base";
+import { Icon, Input } from "@rneui/base";
 import AppInputNewPasswordStyles from "./AppInputNewPasswordStyles";
 import { useState } from "react";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 
 export default ({ control, name, label, style = {} }) => {
   const styles = AppInputNewPasswordStyles();
@@ -13,11 +13,22 @@ export default ({ control, name, label, style = {} }) => {
     majuscule: false,
   });
 
+  const RuleLine = ({ valid, message }) => (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <Icon
+        type="font-awesome-5"
+        name={valid ? "smile-wink" : "poo"}
+        color={valid ? "green" : "darkred"}
+      ></Icon>
+      <Text style={{ marginLeft: 3 }}>{message}</Text>
+    </View>
+  );
+
   return (
     <Controller
       control={control}
       name={name}
-      defaultValue=""
+      defaultValue="Rootroot"
       rules={{ pattern: /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/ }}
       render={({ field: { onChange, onBlur, value } }) => (
         <>
@@ -29,18 +40,25 @@ export default ({ control, name, label, style = {} }) => {
             onChangeText={(text) => {
               onChange(text);
               setPasswordRules({
-                minLength: text.length > 8,
+                minLength: text.length >= 8,
                 minuscule: /[a-z]/.test(text),
                 majuscule: /[A-Z]/.test(text),
               });
             }}
             value={value}
           />
-          <Text>
-            taille minimum {passwordRules.minLength ? "OK" : "PAS OK"}
-          </Text>
-          <Text>majucsule {passwordRules.majuscule ? "OK" : "PAS OK"}</Text>
-          <Text>minuscule {passwordRules.minuscule ? "OK" : "PAS OK"}</Text>
+          <RuleLine
+            valid={passwordRules.minLength}
+            message="8 caractères minimum"
+          />
+          <RuleLine
+            valid={passwordRules.majuscule}
+            message="Au moins une majuscule"
+          />
+          <RuleLine
+            valid={passwordRules.minuscule}
+            message="Au moins une minuscule"
+          />
         </>
       )}
     ></Controller>

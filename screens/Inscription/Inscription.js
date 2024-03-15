@@ -21,7 +21,7 @@ export default ({ onInscription }) => {
       <AppInputText
         control={control}
         name="email"
-        defaultValue=""
+        defaultValue="c@c.com"
         rules={{
           required: "Le champs est requis",
           pattern: {
@@ -31,9 +31,9 @@ export default ({ onInscription }) => {
         }}
         label="Email"
       ></AppInputText>
-      <AppInputNewPassword 
+      <AppInputNewPassword
         control={control}
-        name="pasword"
+        name="password"
         label="Mot de passe"
       />
       <AppButton

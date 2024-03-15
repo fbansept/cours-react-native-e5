@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import Accueil from "./screens/Accueil/Accueil";
 import Chercher from "./screens/Chercher/Chercher";
 import Vendre from "./screens/Vendre/Vendre";
@@ -14,6 +14,7 @@ import { useState } from "react";
 import Connexion from "./screens/Connexion/Connexion";
 import * as SecureStore from "expo-secure-store";
 import Inscription from "./screens/Inscription/Inscription";
+import Toast from "react-native-root-toast";
 
 export default () => {
   const [connecte, setConnecte] = useState(SecureStore.getItem("jwt") != null);
@@ -31,10 +32,6 @@ export default () => {
       });
   };
 
-  const onInscription = (data) => {
-    console.log(data);
-  };
-
   const onDeconnexion = () => {
     SecureStore.deleteItemAsync("jwt");
     setConnecte(false);
@@ -44,12 +41,37 @@ export default () => {
   const NavigationConnexion = createNativeStackNavigator();
 
   const EcransConnexions = () => {
+    const navigation = useNavigation();
+
+    const onInscription = (data) => {
+
+      fetch("http://192.168.43.168:4000/utilisateur", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "content-type": "application/json" },
+      })
+        .then(async (result) => {
+          if (!result.ok) {
+            const error = await result.json();
+            let err = new Error(error.message);
+            err.result = result;
+            err.status = result.status;
+            throw err;
+          }
+        })
+        .then((result) => {
+          Toast.show("Compte créé, vous pouvez desormais vous connecter");
+          navigation.navigate("connexion");
+        })
+        .catch((erreur) => Toast.show(erreur.message));
+    };
+
     const ConnexionProps = () => (
       <Connexion onConnexion={onConnexion}></Connexion>
     );
 
     const InscriptionProps = () => (
-      <Inscription onInscription={onInscription}/>
+      <Inscription onInscription={onInscription} />
     );
 
     return (

@@ -8,7 +8,7 @@ export default () => {
   const [listeArticle, setListeArticle] = useState([]);
 
   useEffect(() => {
-    fetch("http://192.168.43.168:4000/offres", {
+    fetch("http://" + process.env.EXPO_PUBLIC_IP_SERVEUR + "/offres", {
       headers: { Authorization: "Bearer " + SecureStore.getItem("jwt") },
     })
       .then((result) => result.json())

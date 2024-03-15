@@ -9,12 +9,54 @@ import Message from "./screens/Message/Message";
 import Profil from "./screens/Profil/Profil";
 import { Icon } from "@rneui/base";
 import AppStyles from "./AppStyles";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useState } from "react";
+import Connexion from "./screens/Connexion/Connexion";
+import * as SecureStore from "expo-secure-store";
 
 export default () => {
-  const NavigationPrincipale = createBottomTabNavigator();
+  const [connecte, setConnecte] = useState(SecureStore.getItem("jwt") != null);
 
-  const App = () => {
+  const onConnexion = (data) => {
+    fetch("http://192.168.43.168:4000/login", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "content-type": "application/json" },
+    })
+      .then((result) => result.json())
+      .then((result) => {
+        SecureStore.setItem("jwt", result.jwt);
+        setConnecte(true);
+      });
+  };
+
+  const onDeconnexion = () => {
+    SecureStore.deleteItemAsync("jwt");
+    setConnecte(false);
+  };
+
+  const NavigationPrincipale = createBottomTabNavigator();
+  const NavigationConnexion = createNativeStackNavigator();
+
+  const EcransConnexions = () => {
+    const ConnexionProps = () => (
+      <Connexion onConnexion={onConnexion}></Connexion>
+    );
+
+    return (
+      <NavigationConnexion.Navigator>
+        <NavigationConnexion.Screen
+          component={ConnexionProps}
+          name="connexion"
+        />
+      </NavigationConnexion.Navigator>
+    );
+  };
+
+  const EcransPrincipaux = () => {
     const styles = AppStyles();
+
+    const ProfilProps = () => <Profil onDeconnexion={onDeconnexion} />;
 
     return (
       <NavigationPrincipale.Navigator>
@@ -83,7 +125,7 @@ export default () => {
             tabBarInactiveTintColor: styles.itemMenuInactive.color,
           }}
           name="profil"
-          component={Profil}
+          component={ProfilProps}
         />
       </NavigationPrincipale.Navigator>
     );
@@ -93,7 +135,7 @@ export default () => {
     <SafeAreaProvider>
       <NavigationContainer>
         <StatusBar style="auto" />
-        <App></App>
+        {connecte ? <EcransPrincipaux /> : <EcransConnexions />}
       </NavigationContainer>
     </SafeAreaProvider>
   );
